@@ -1,92 +1,84 @@
-# DevOps Lab 1 – Introduction to Continuous Delivery (CD) and CI/CD Pipelines
+# Continuous Delivery Lab
 
-This project is part of a lab series focused on **Continuous Delivery and DevOps** practices. Lab 1 explores the foundational concepts of setting up a basic CI/CD pipeline and understanding the automation lifecycle in modern software development.
+A small Java/Spring Boot API built to demonstrate a practical CI/CD workflow from source code to a container-ready artifact.
 
-🎯 Objective
+## What this project demonstrates
 
-- Understand the core principles of Continuous Integration and Continuous Delivery (CI/CD)
-- Build a basic pipeline using industry-standard tools
-- Automate application builds, tests, and deployments
+- Automated tests on every pull request
+- Maven packaging in CI
+- Docker image validation
+- Spring Boot health checks
+- Environment-driven application versioning
+- A simple REST API that is easy to deploy anywhere
 
-🔧 Technologies Used
+## API
 
-- **Git** – Version control
-- **GitHub Actions / Jenkins / GitLab CI** – CI/CD pipeline (whichever you used)
-- **Docker** – Containerization (if applicable)
-- **Shell Scripts / YAML** – Automation configuration
-- **Node.js / Java / Python** – (update this to match your code stack)
-- **AWS / GCP / Azure** – (if any cloud deployment is involved)
+### Application status
 
-📁 Project Structure
+```http
+GET /api/status
+```
 
-cdd-lab-1/ ├── .github/workflows/ # GitHub Actions CI/CD workflows ├── src/ # Source code ├── Dockerfile # Docker configuration (if used) ├── scripts/ # Custom automation scripts ├── README.md # Project documentation └── Jenkinsfile # If Jenkins is used instead of GitHub Actions
+Example response:
 
-bash
-Copy
-Edit
+```json
+{
+  "status": "UP",
+  "version": "dev",
+  "timestamp": "2026-10-03T00:00:00Z"
+}
+```
 
-🚀 Getting Started
+### Delivery message
 
-1. **Clone the Repository**
+```http
+GET /api/message
+```
+
+### Actuator health
+
+```http
+GET /actuator/health
+```
+
+## Run locally
 
 ```bash
-git clone https://github.com/tejaswini14345/cdd-lab-1.git
-cd cdd-lab-1
-View or Modify CI/CD Pipeline
+mvn spring-boot:run
+```
 
-For GitHub Actions:
+Then open:
 
-Navigate to .github/workflows/
+```text
+http://localhost:8080/api/status
+```
 
-Edit the .yml files to customize steps
+Set a version value:
 
-For Jenkins:
+```bash
+APP_VERSION=1.2.0 mvn spring-boot:run
+```
 
-Edit the Jenkinsfile
+## Tests
 
-Trigger the Pipeline
+```bash
+mvn test
+```
 
-Push a new commit or create a pull request to see the automation in action.
+## Docker
 
-🔄 What This Pipeline Does
-Checks out code from the repository
+```bash
+docker build -t continuous-delivery-lab .
+docker run -p 8080:8080 -e APP_VERSION=1.0.0 continuous-delivery-lab
+```
 
-Installs dependencies
+## CI/CD
 
-Runs automated tests
+Two GitHub Actions workflows are included:
 
-Builds the application
+- **CI** — runs tests and packages the application
+- **Docker Build** — verifies that the container image builds successfully
 
-Optionally deploys to a staging or production server
+## Tech Stack
 
-📸 Sample Workflow YAML (GitHub Actions)
-yaml
-Copy
-Edit
-name: CI/CD Pipeline
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  build-and-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Run tests
-        run: echo "Add your test scripts here"
-📚 Learning Outcomes
-Understand YAML configuration for CI/CD
-
-Practice DevOps tools and workflows
-
-Learn how to containerize and automate builds
-
-Deploy applications with minimal manual steps
-
-📬 Contact
-Sai Venkata Tejaswini Betina
-📧 bsvteju@umich.edu
-🔗 GitHub
-
+Java 17 · Spring Boot · Spring Actuator · Maven · JUnit · Docker · GitHub Actions
